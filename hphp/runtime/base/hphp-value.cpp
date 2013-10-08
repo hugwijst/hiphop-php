@@ -16,6 +16,7 @@
 
 #include "hphp/runtime/base/complex-types.h"
 #include "hphp/util/trace.h"
+#include "hphp/util/json.h"
 
 namespace HPHP {
 
@@ -25,6 +26,18 @@ std::string TypedValue::pretty() const {
   char buf[20];
   sprintf(buf, "0x%lx", long(m_data.num));
   return Trace::prettyNode(tname(m_type).c_str(), std::string(buf));
+}
+
+void TypedValue::toJson(JSON::DocTarget::OutputStream& out) const {
+  JSON::DocTarget::MapStream obj(out);
+
+  obj.add("type", tname(m_type));
+
+  std::ostringstream ss;
+  ss << m_data.num;
+  obj.add("value", ss.str());
+
+  obj.done();
 }
 
 //////////////////////////////////////////////////////////////////////

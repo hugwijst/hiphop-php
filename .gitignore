@@ -37,6 +37,9 @@ hphp.log
 /hphp/hhvm/gen
 /hphp/hhvm/hhvm
 
+/hphp/json_export/gen
+/hphp/json_export/json_export
+
 /hphp/runtime/ext/*.ext_hhvm.cpp
 /hphp/runtime/ext/*.ext_hhvm.h
 /hphp/runtime/ext/*/*.ext_hhvm.cpp
@@ -73,6 +76,7 @@ install_manifest.txt
 /hphp/test/Makefile
 /hphp/hphp/Makefile
 /hphp/hhvm/Makefile
+/hphp/json_export/Makefile
 /hphp/compiler/Makefile
 /hphp/Makefile
 /Makefile

@@ -79,6 +79,26 @@ struct Func {
       }
     }
 
+    void toJson(JSON::DocTarget::OutputStream& out) {
+      const StringData* tcName      = m_typeConstraint.typeName();
+      TypeConstraint::Flags tcFlags = m_typeConstraint.flags();
+
+      JSON::DocTarget::MapStream obj(out);
+
+      //obj.add("builtinType");
+      //m_builtinType.toJson(out);
+      obj.add("funcletOff"    , m_funcletOff);
+      obj.add("defVal");
+      m_defVal.toJson(out);
+      obj.add("phpCode"       , m_phpCode);
+      obj.add("Name"          , tcName);
+      obj.add("Flags"         , tcFlags);
+      //obj.add("userAttributes", m_userAttributes); // Array
+      obj.add("userType"      , m_userType);
+
+      obj.done();
+    }
+
     void setBuiltinType(DataType type) { m_builtinType = type; }
     DataType builtinType() const { return m_builtinType; }
 

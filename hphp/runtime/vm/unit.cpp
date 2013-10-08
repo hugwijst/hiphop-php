@@ -27,6 +27,7 @@
 #include "hphp/util/util.h"
 #include "hphp/util/atomic.h"
 #include "hphp/util/read-only-arena.h"
+#include "hphp/util/json.h"
 #include "hphp/parser/parser.h"
 
 #include "hphp/runtime/ext/ext_variable.h"
@@ -1694,6 +1695,74 @@ std::string Unit::toString() const {
     fr.popFront()->prettyPrint(ss);
   }
   return ss.str();
+}
+
+void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
+  JSON::DocTarget::MapStream obj(out);
+
+  /* add bytecode */
+  obj.add("bc");
+  JSON::DocTarget::ListStream bc(out);
+  for(size_t i = 0; i < m_bclen; ++i) {
+    bc << m_bc[i];
+  }
+  bc.done();
+
+  obj.add("bc_meta");
+  JSON::DocTarget::ListStream bc_meta(out);
+  for(size_t i = 0; i < m_bc_meta_len; ++i) {
+    bc_meta << m_bc[i];
+  }
+  bc_meta.done();
+
+  obj.add("filepath", m_filepath);
+  obj.add("md5", m_md5.toString());
+
+  obj.add("linetable");
+  JSON::DocTarget::ListStream lines(out);
+  for(const auto& lineItem : m_lineTable) {
+    lines.next();
+
+    JSON::DocTarget::MapStream line(out);
+    line.add("pastOffset", lineItem.pastOffset());
+    line.add("line", lineItem.val());
+    line.done();
+  }
+  lines.done();
+
+  obj.add("mainReturn");
+  m_mainReturn.toJson(out);
+  obj.add("mergeable", m_mergeOnly);
+
+  obj.add("typedefs");
+  JSON::DocTarget::ListStream defs(out);
+  for(const auto& def : m_typedefs) {
+    defs.next();
+    def.toJson(out);
+  }
+  defs.done();
+
+  obj.add("litStrs");
+  JSON::DocTarget::ListStream litstrs(out);
+  for(const auto& litstr : m_namedInfo) {
+    std::string str = litstr.first->toCPPString();
+    litstrs << str;
+  }
+  litstrs.done();
+
+  obj.add("functions");
+  JSON::DocTarget::ListStream functions(out);
+  for(const auto& entry : m_funcTable) {
+    functions.next();
+
+    JSON::DocTarget::MapStream entryObj(out);
+    entryObj.add("pastOffset", entry.pastOffset());
+    //entryObj.add("entry", entry.val().toJson());
+    entryObj.done();
+  }
+  functions.done();
+
+  obj.done();
 }
 
 Func* Unit::lookupFunc(const NamedEntity* ne) {

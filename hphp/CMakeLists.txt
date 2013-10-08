@@ -102,6 +102,7 @@ add_subdirectory(vixl)
 add_subdirectory(compiler)
 add_subdirectory(runtime/ext_hhvm)
 add_subdirectory(hhvm)
+add_subdirectory(json_export)
 add_subdirectory(system)
 
 if (NOT "$ENV{HPHP_NOTEST}" STREQUAL "1")

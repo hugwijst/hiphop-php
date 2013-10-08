@@ -24,6 +24,7 @@
 #include "hphp/runtime/vm/named-entity.h"
 #include "hphp/runtime/base/hphp-array.h"
 #include "hphp/util/range.h"
+#include "hphp/util/json.h"
 #include "hphp/parser/location.h"
 #include "hphp/runtime/base/md5.h"
 #include "hphp/util/tiny-vector.h"
@@ -266,6 +267,16 @@ struct Typedef {
       (nullable)
       ;
   }
+
+  void toJson(JSON::DocTarget::OutputStream& out) const {
+    JSON::DocTarget::MapStream obj(out);
+
+    obj.add("name", name);
+    obj.add("value", value);
+    obj.add("dataType", tname(kind));
+    obj.add("nullable", nullable);
+    obj.done();
+  };
 };
 
 /*
@@ -698,6 +709,7 @@ public:
 
   void prettyPrint(std::ostream&, PrintOpts = PrintOpts()) const;
   std::string toString() const;
+  void toJson(JSON::DocTarget::OutputStream& out) const;
 
 public: // Translator field access
   static size_t bcOff() { return offsetof(Unit, m_bc); }
