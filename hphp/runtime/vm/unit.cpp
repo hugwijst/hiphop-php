@@ -1715,7 +1715,7 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   }
   bc_meta.done();
 
-  obj.add("filepath", m_filepath);
+  obj.add("filepath", m_filepath->toCPPString());
   obj.add("md5", m_md5.toString());
 
   obj.add("linetable");
