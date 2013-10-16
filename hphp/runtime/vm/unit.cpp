@@ -1762,6 +1762,19 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   }
   functions.done();
 
+  obj.add("arrays");
+  JSON::DocTarget::ListStream arrays(out);
+  for(const auto& entry : m_funcTable) {
+    arrays.next();
+
+    JSON::DocTarget::MapStream entryObj(out);
+    entryObj.add("pastOffset", entry.pastOffset());
+    //entryObj.add("entry", entry.val().toJson());
+    entryObj.done();
+  }
+  arrays.done();
+
+
   obj.done();
 }
 
