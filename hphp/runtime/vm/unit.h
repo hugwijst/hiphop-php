@@ -271,8 +271,8 @@ struct Typedef {
   void toJson(JSON::DocTarget::OutputStream& out) const {
     JSON::DocTarget::MapStream obj(out);
 
-    obj.add("name", name);
-    obj.add("value", value);
+    obj.add("name", name->toCPPString());
+    obj.add("value", value->toCPPString());
     obj.add("dataType", tname(kind));
     obj.add("nullable", nullable);
     obj.done();
