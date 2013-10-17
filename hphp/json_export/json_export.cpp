@@ -14,13 +14,15 @@ int main(int argc, const char* argv[]) {
     initialize_repo();
     init_thread_locals();
 
-    if(argc == 1) {
-        std::cerr << "Missing first parameter!" << std::endl;
+    if(argc < 3) {
+        std::cerr << "Missing parameters!" << std::endl;
         std::cerr << "Please specify the location of the repo as the first argument." << std::endl;
+	std::cerr << "Please specify the location of the resulting .json file as the second argument." << std::endl;
         return 1;
     }
 
     std::string repo_path(argv[1]);
+    std::string output_path(argv[2]);
 
     HPHP::RuntimeOption::RepoLocalMode = "--";
     HPHP::RuntimeOption::RepoDebugInfo = true;
@@ -51,7 +53,7 @@ int main(int argc, const char* argv[]) {
     RepoStmt stmt(repo);
     stmt.prepare(ssSelect.str());
 
-    std::ofstream output("testbc.json");
+    std::ofstream output(output_path);
     HPHP::JSON::DocTarget::OutputStream out(output, 0);
     HPHP::JSON::DocTarget::MapStream mainObj(out);
     mainObj.add("units");
