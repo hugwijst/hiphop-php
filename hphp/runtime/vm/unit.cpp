@@ -1711,7 +1711,7 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("bc_meta");
   JSON::DocTarget::ListStream bc_meta(out);
   for(size_t i = 0; i < m_bc_meta_len; ++i) {
-    bc_meta << m_bc[i];
+    bc_meta << m_bc_meta[i];
   }
   bc_meta.done();
 
