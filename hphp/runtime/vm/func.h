@@ -172,6 +172,8 @@ struct Func {
   Func* clone(Class* cls) const;
   const Func* cloneAndSetClass(Class* cls) const;
 
+  void toJson(JSON::DocTarget::OutputStream& out);
+
   void validate() const {
 #ifdef DEBUG
     assert(this && m_magic == kMagic);

@@ -320,6 +320,55 @@ const Func* Func::cloneAndSetClass(Class* cls) const {
   return clonedFunc;
 }
 
+void Func::toJson(JSON::DocTarget::OutputStream& out) {
+  JSON::DocTarget::MapStream obj(out);
+
+  obj.add("name"                  , m_name    ->toCPPString());
+  obj.add("fullName"              , m_fullName->toCPPString());
+  obj.add("line1"                 , shared()->m_line1       );
+  obj.add("line2"                 , shared()->m_line2       );
+  obj.add("base"                  , shared()->m_base        );
+  obj.add("past"                  , shared()->m_past        );
+  obj.add("attrs"                 , m_attrs                 );
+  obj.add("returnType"            , shared()->m_returnType            );
+  obj.add("docComment"            , shared()->m_docComment->toCPPString());
+  obj.add("numLocals"             , shared()->m_numLocals             );
+  obj.add("numIterators"          , shared()->m_numIterators          );
+  obj.add("maxStackCells"         , m_maxStackCells         );
+  obj.add("isClosureBody"         , shared()->m_isClosureBody         );
+  obj.add("isGenerator"           , shared()->m_isGenerator           );
+  obj.add("isGeneratorFromClosure", shared()->m_isGeneratorFromClosure);
+  obj.add("isPairGenerator"       , shared()->m_isPairGenerator       );
+  obj.add("hasGeneratorAsBody"    , shared()->m_hasGeneratorAsBody    );
+  //obj.add("containsCalls"         , m_containsCalls         );
+  obj.add("isAsync"               , shared()->m_isAsync               );
+
+  obj.add("params");
+  JSON::DocTarget::ListStream paramsArr(out);
+  for(/*const */auto& param : shared()->m_params) {
+    paramsArr.next();
+
+    param.toJson(out);
+  }
+  paramsArr.done();
+
+  obj.add("localNames");
+  JSON::DocTarget::ListStream localNamesArr(out);
+  for(Id i = 0; i < shared()->m_localNames.size(); ++i) {
+    std::string name = shared()->m_localNames[i]->toCPPString();
+    localNamesArr << name;
+  }
+  localNamesArr.done();
+  //obj.add("staticVars"            , m_staticVars            );
+  //obj.add("ehtab"                 , m_ehtab                 );
+  //obj.add("fpitab"                , m_fpitab                );
+  //obj.add("userAttributes"        , m_userAttributes        );
+  //obj.add("retTypeConstraint"     , m_retTypeConstraint     );
+  //obj.add("originalFilename"      , m_originalFilename      );
+
+  obj.done();
+}
+
 const Func* Func::findCachedClone(Class* cls) const {
   const Func* nextFunc = this;
   while (nextFunc) {
