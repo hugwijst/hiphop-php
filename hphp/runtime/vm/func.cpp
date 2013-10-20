@@ -340,6 +340,7 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("isGeneratorFromClosure", shared()->m_isGeneratorFromClosure);
   obj.add("isPairGenerator"       , shared()->m_isPairGenerator       );
   obj.add("hasGeneratorAsBody"    , shared()->m_hasGeneratorAsBody    );
+  // Only in function emmiter :|
   //obj.add("containsCalls"         , m_containsCalls         );
   obj.add("isAsync"               , shared()->m_isAsync               );
 
@@ -359,12 +360,31 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
     localNamesArr << name;
   }
   localNamesArr.done();
-  //obj.add("staticVars"            , m_staticVars            );
+
+  obj.add("staticVars");
+  JSON::DocTarget::ListStream staticVarsArr(out);
+  for(const auto& var : shared()->m_staticVars) {
+    staticVarsArr.next();
+
+    JSON::DocTarget::MapStream obj(out);
+    obj.add("name", var.name->toCPPString());
+    obj.add("phpCode", var.phpCode->toCPPString());
+    obj.done();
+  }
+  staticVarsArr.done();
   //obj.add("ehtab"                 , m_ehtab                 );
   //obj.add("fpitab"                , m_fpitab                );
-  //obj.add("userAttributes"        , m_userAttributes        );
-  //obj.add("retTypeConstraint"     , m_retTypeConstraint     );
-  //obj.add("originalFilename"      , m_originalFilename      );
+
+  obj.add("userAttributes");
+  JSON::DocTarget::MapStream userAttributesObj(out);
+  for(const auto& attr : shared()->m_userAttributes) {
+    userAttributesObj.add(attr.first->toCPPString());
+    attr.second.toJson(out);
+  }
+  userAttributesObj.done();
+
+  obj.add("retTypeConstraint", shared()->m_retTypeConstraint ? shared()->m_retTypeConstraint->toCPPString() : "");
+  obj.add("originalFilename", shared()->m_originalFilename ? shared()->m_originalFilename->toCPPString() : "");
 
   obj.done();
 }
