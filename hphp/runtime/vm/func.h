@@ -85,16 +85,23 @@ struct Func {
 
       JSON::DocTarget::MapStream obj(out);
 
-      //obj.add("builtinType");
-      //m_builtinType.toJson(out);
+      obj.add("builtinType", tname(m_builtinType));
       obj.add("funcletOff"    , m_funcletOff);
       obj.add("defVal");
       m_defVal.toJson(out);
-      obj.add("phpCode"       , m_phpCode);
-      obj.add("Name"          , tcName);
+      obj.add("phpCode"       , m_phpCode ? m_phpCode->toCPPString() : "null");
+      obj.add("Name"          , tcName ? tcName->toCPPString() : "null");
       obj.add("Flags"         , tcFlags);
-      //obj.add("userAttributes", m_userAttributes); // Array
-      obj.add("userType"      , m_userType);
+
+      obj.add("userType"      , m_userType ? m_userType->toCPPString() : "null");
+
+      obj.add("userAttributes");
+      JSON::DocTarget::MapStream userAttributesObj(out);
+      for(const auto& attr : m_userAttributes) {
+        userAttributesObj.add(attr.first->toCPPString());
+        attr.second.toJson(out);
+      }
+      userAttributesObj.done();
 
       obj.done();
     }
