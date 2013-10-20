@@ -79,7 +79,7 @@ struct Func {
       }
     }
 
-    void toJson(JSON::DocTarget::OutputStream& out) {
+    void toJson(JSON::DocTarget::OutputStream& out) const {
       const StringData* tcName      = m_typeConstraint.typeName();
       TypeConstraint::Flags tcFlags = m_typeConstraint.flags();
 
@@ -172,7 +172,7 @@ struct Func {
   Func* clone(Class* cls) const;
   const Func* cloneAndSetClass(Class* cls) const;
 
-  void toJson(JSON::DocTarget::OutputStream& out);
+  void toJson(JSON::DocTarget::OutputStream& out) const;
 
   void validate() const {
 #ifdef DEBUG

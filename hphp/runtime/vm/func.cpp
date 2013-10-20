@@ -320,7 +320,7 @@ const Func* Func::cloneAndSetClass(Class* cls) const {
   return clonedFunc;
 }
 
-void Func::toJson(JSON::DocTarget::OutputStream& out) {
+void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream obj(out);
 
   obj.add("name"                  , m_name    ->toCPPString());
@@ -345,7 +345,7 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) {
 
   obj.add("params");
   JSON::DocTarget::ListStream paramsArr(out);
-  for(/*const */auto& param : shared()->m_params) {
+  for(const auto& param : shared()->m_params) {
     paramsArr.next();
 
     param.toJson(out);
