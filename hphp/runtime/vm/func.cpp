@@ -320,18 +320,26 @@ const Func* Func::cloneAndSetClass(Class* cls) const {
   return clonedFunc;
 }
 
+std::string stringDataToStdString(const StringData* sd) {
+  if(sd != nullptr) {
+    return sd->toCPPString();
+  } else {
+    return "";
+  }
+}
+
 void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream obj(out);
 
-  obj.add("name"                  , m_name    ->toCPPString());
-  obj.add("fullName"              , m_fullName->toCPPString());
+  obj.add("name"                  , stringDataToStdString(m_name));
+  obj.add("fullName"              , stringDataToStdString(m_fullName));
   obj.add("line1"                 , shared()->m_line1       );
   obj.add("line2"                 , shared()->m_line2       );
   obj.add("base"                  , shared()->m_base        );
   obj.add("past"                  , shared()->m_past        );
   obj.add("attrs"                 , m_attrs                 );
   obj.add("returnType"            , shared()->m_returnType            );
-  obj.add("docComment"            , shared()->m_docComment->toCPPString());
+  obj.add("docComment"            , stringDataToStdString(shared()->m_docComment));
   obj.add("numLocals"             , shared()->m_numLocals             );
   obj.add("numIterators"          , shared()->m_numIterators          );
   obj.add("maxStackCells"         , m_maxStackCells         );
@@ -356,7 +364,7 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("localNames");
   JSON::DocTarget::ListStream localNamesArr(out);
   for(Id i = 0; i < shared()->m_localNames.size(); ++i) {
-    std::string name = shared()->m_localNames[i]->toCPPString();
+    std::string name = stringDataToStdString(shared()->m_localNames[i]);
     localNamesArr << name;
   }
   localNamesArr.done();
@@ -367,8 +375,8 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
     staticVarsArr.next();
 
     JSON::DocTarget::MapStream obj(out);
-    obj.add("name", var.name->toCPPString());
-    obj.add("phpCode", var.phpCode->toCPPString());
+    obj.add("name", stringDataToStdString(var.name));
+    obj.add("phpCode", stringDataToStdString(var.phpCode));
     obj.done();
   }
   staticVarsArr.done();
@@ -378,13 +386,13 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("userAttributes");
   JSON::DocTarget::MapStream userAttributesObj(out);
   for(const auto& attr : shared()->m_userAttributes) {
-    userAttributesObj.add(attr.first->toCPPString());
+    userAttributesObj.add(stringDataToStdString(attr.first));
     attr.second.toJson(out);
   }
   userAttributesObj.done();
 
-  obj.add("retTypeConstraint", shared()->m_retTypeConstraint ? shared()->m_retTypeConstraint->toCPPString() : "");
-  obj.add("originalFilename", shared()->m_originalFilename ? shared()->m_originalFilename->toCPPString() : "");
+  obj.add("retTypeConstraint", stringDataToStdString(shared()->m_retTypeConstraint));
+  obj.add("originalFilename", stringDataToStdString(shared()->m_originalFilename));
 
   obj.done();
 }
