@@ -1764,9 +1764,11 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("arrays");
   JSON::DocTarget::ListStream arrays(out);
   VariableSerializer vs(VariableSerializer::Type::JSON);
-  for(auto& elem : m_arrays) {
+  for(const auto& elem : m_arrays) {
     arrays.next();
 
+    // The easiest way to get a CArrRef is elem->copy().
+    // TODO: Find a more efficient solution.
     String str = vs.serializeValue(Variant(elem->copy()), false);
     out << str->toCPPString();
   }
