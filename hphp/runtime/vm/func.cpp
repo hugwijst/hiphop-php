@@ -335,24 +335,24 @@ void Func::serialize(JSON::DocTarget::OutputStream& out) const {
 
   obj.add("name"                  , stringDataToStdString(m_name));
   obj.add("fullName"              , stringDataToStdString(m_fullName));
-  obj.add("line1"                 , shared()->m_line1       );
-  obj.add("line2"                 , shared()->m_line2       );
-  obj.add("base"                  , shared()->m_base        );
-  obj.add("past"                  , shared()->m_past        );
-  obj.add("attrs"                 , m_attrs                 );
-  obj.add("returnType"            , shared()->m_returnType            );
+  obj.add("line1"                 , shared()->m_line1);
+  obj.add("line2"                 , shared()->m_line2);
+  obj.add("base"                  , shared()->m_base);
+  obj.add("past"                  , shared()->m_past);
+  obj.add("attrs"                 , m_attrs);
+  obj.add("returnType"            , shared()->m_returnType);
   obj.add("docComment"            , stringDataToStdString(shared()->m_docComment));
-  obj.add("numLocals"             , shared()->m_numLocals             );
-  obj.add("numIterators"          , shared()->m_numIterators          );
-  obj.add("maxStackCells"         , m_maxStackCells         );
-  obj.add("isClosureBody"         , shared()->m_isClosureBody         );
-  obj.add("isGenerator"           , shared()->m_isGenerator           );
+  obj.add("numLocals"             , shared()->m_numLocals);
+  obj.add("numIterators"          , shared()->m_numIterators);
+  obj.add("maxStackCells"         , m_maxStackCells);
+  obj.add("isClosureBody"         , shared()->m_isClosureBody);
+  obj.add("isGenerator"           , shared()->m_isGenerator);
   obj.add("isGeneratorFromClosure", shared()->m_isGeneratorFromClosure);
-  obj.add("isPairGenerator"       , shared()->m_isPairGenerator       );
-  obj.add("hasGeneratorAsBody"    , shared()->m_hasGeneratorAsBody    );
+  obj.add("isPairGenerator"       , shared()->m_isPairGenerator);
+  obj.add("hasGeneratorAsBody"    , shared()->m_hasGeneratorAsBody);
   // Only in function emmiter :|
-  //obj.add("containsCalls"         , m_containsCalls         );
-  obj.add("isAsync"               , shared()->m_isAsync               );
+  //obj.add("containsCalls"         , m_containsCalls);
+  obj.add("isAsync"               , shared()->m_isAsync);
 
   obj.add("params");
   JSON::DocTarget::ListStream paramsArr(out);
