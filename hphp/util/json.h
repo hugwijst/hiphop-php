@@ -68,6 +68,24 @@ private:
   std::string m_name;
 };
 
+/**
+ * A JSON formatted string.
+ */
+class JsonString {
+public:
+  explicit JsonString(const char *json) {
+    assert(json && *json);
+    m_json = json;
+  }
+  explicit JsonString(const std::string &json) {
+    assert(!json.empty());
+    m_json = json;
+  }
+  const std::string &getString() const { return m_json; }
+private:
+  std::string m_json;
+};
+
 // struct _Null {};
 // _Null Null;
 enum class Null {};
@@ -99,6 +117,11 @@ public:
 
   _OutputStream &operator<< (const Name &n) {
     m_out << "\"" << n.getName() << "\":";
+    return *this;
+  }
+
+  _OutputStream &operator<< (const JsonString &o) {
+    m_out << o.getString();
     return *this;
   }
 

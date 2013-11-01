@@ -40,6 +40,7 @@
 #include "hphp/runtime/vm/verifier/check.h"
 #include "hphp/runtime/base/strings.h"
 #include "hphp/runtime/vm/func-inline.h"
+#include "hphp/runtime/base/variable-serializer.h"
 #include "hphp/runtime/base/file-repository.h"
 #include "hphp/runtime/base/stats.h"
 #include "hphp/runtime/vm/treadmill.h"
@@ -1762,15 +1763,16 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
 
   obj.add("arrays");
   JSON::DocTarget::ListStream arrays(out);
+  VariableSerializer vs(VariableSerializer::Type::JSON);
   for(const auto& elem : m_arrays) {
     arrays.next();
 
-    JSON::DocTarget::MapStream elemObj(out);
-    //entryObj.add("entry", entry.val().toJson());
-    elemObj.done();
+    // The easiest way to get a CArrRef is elem->copy().
+    // TODO: Find a more efficient solution.
+    String str = vs.serializeValue(Variant(elem->copy()), false);
+    out << JSON::JsonString(str->toCPPString());
   }
   arrays.done();
-
 
   obj.done();
 }
