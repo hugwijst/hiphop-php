@@ -95,7 +95,7 @@ typedef ObjectData*(*BuiltinCtorFunction)(Class*);
  *    Maybe/Always split below.
  *
  */
-class PreClass : public AtomicCountable {
+class PreClass : public AtomicCountable, public JSON::DocTarget::ISerializable {
   friend class PreClassEmitter;
   friend class Peephole;
 
@@ -107,7 +107,7 @@ class PreClass : public AtomicCountable {
     AlwaysHoistable
   };
 
-  struct Prop {
+  struct Prop : public JSON::DocTarget::ISerializable {
     Prop() {}
     Prop(PreClass* preClass,
          const StringData* n,
@@ -118,6 +118,7 @@ class PreClass : public AtomicCountable {
          DataType hphpcType);
 
     void prettyPrint(std::ostream& out) const;
+    void serialize(JSON::DocTarget::OutputStream &out) const;
 
     PreClass* preClass() const { return m_preClass; }
     const StringData* name() const { return m_name; }
@@ -141,13 +142,14 @@ class PreClass : public AtomicCountable {
     DataType m_hphpcType;
   };
 
-  struct Const {
+  struct Const : public JSON::DocTarget::ISerializable {
     Const() {}
     Const(PreClass* preClass, const StringData* n,
           const StringData* typeConstraint, const TypedValue& val,
           const StringData* phpCode);
 
     void prettyPrint(std::ostream& out) const;
+    void serialize(JSON::DocTarget::OutputStream &out) const;
 
     PreClass* preClass() const { return m_preClass; }
     const StringData* name() const { return m_name; }
@@ -310,6 +312,7 @@ class PreClass : public AtomicCountable {
   int builtinPropSize() const { return m_builtinPropSize; }
 
   void prettyPrint(std::ostream& out) const;
+  void serialize(JSON::DocTarget::OutputStream &out) const;
 
   NamedEntity* namedEntity() const { return m_namedEntity; }
 

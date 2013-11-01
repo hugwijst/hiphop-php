@@ -106,6 +106,26 @@ void PreClass::Prop::prettyPrint(std::ostream& out) const {
   out << std::endl;
 }
 
+void PreClass::Prop::serialize(JSON::DocTarget::OutputStream& out) const {
+  JSON::DocTarget::MapStream obj(out);
+
+  obj.add("attributes");
+  JSON::DocTarget::MapStream attr(out);
+  attr.add("static",    ( attrs() & AttrStatic    ) != 0);
+  attr.add("public",    ( attrs() & AttrPublic    ) != 0);
+  attr.add("protected", ( attrs() & AttrProtected ) != 0);
+  attr.add("private",   ( attrs() & AttrPrivate   ) != 0);
+  attr.done();
+
+  obj.add("name", name()->toCPPString());
+  obj.add("docComment", docComment()->toCPPString());
+
+  obj.add("value");
+  val().serialize(out);
+
+  obj.done();
+}
+
 //=============================================================================
 // PreClass::Const.
 
@@ -128,6 +148,29 @@ void PreClass::Const::prettyPrint(std::ostream& out) const {
     out << ss.str();
   }
   out << std::endl;
+}
+
+namespace {
+  std::string stringDataToStdString(const StringData* sd) {
+    if(sd != nullptr) {
+      return sd->toCPPString();
+    } else {
+      return "";
+    }
+  }
+}
+
+void PreClass::Const::serialize(JSON::DocTarget::OutputStream& out) const {
+  JSON::DocTarget::MapStream obj(out);
+
+  obj.add("name", stringDataToStdString(name()));
+  obj.add("value");
+  val().serialize(out);
+
+  obj.add("typeConstraint", stringDataToStdString(typeConstraint()));
+  obj.add("phpCode", stringDataToStdString(phpCode()));
+
+  obj.done();
 }
 
 //=============================================================================
@@ -183,6 +226,62 @@ void PreClass::prettyPrint(std::ostream &out) const {
     out << " ";
     it->prettyPrint(out);
   }
+}
+
+void PreClass::serialize(JSON::DocTarget::OutputStream &out) const {
+  JSON::DocTarget::MapStream obj(out);
+
+  obj.add("attributes");
+  JSON::DocTarget::ListStream attrs(out);
+  if (m_attrs & AttrAbstract) { attrs << "abstract"; }
+  if (m_attrs & AttrFinal) { attrs << "final"; }
+  if (m_attrs & AttrInterface) { attrs << "interface"; }
+  attrs.done();
+
+  obj.add("name", m_name->toCPPString());
+  obj.add("offset", m_offset);
+  {
+    std::string hoistable;
+    switch(m_hoistable) {
+      case NotHoistable:    hoistable = "not";       break;
+      case Mergeable:       hoistable = "mergeable"; break;
+      case MaybeHoistable:  hoistable = "maybe";     break;
+      case AlwaysHoistable: hoistable = "always";    break;
+      default:              hoistable = "unknown";   break;
+    }
+    obj.add("hoistable", hoistable);
+  }
+
+  if(m_id != -1) {
+    obj.add("id", m_id);
+  }
+
+  obj.add("functions");
+  JSON::DocTarget::ListStream funcs(out);
+  for (Func* const* it = methods(); it != methods() + numMethods(); ++it) {
+    funcs << *(*it);
+  }
+  funcs.done();
+
+  obj.add("properties");
+  JSON::DocTarget::ListStream props(out);
+  for (const Prop* it = properties();
+      it != properties() + numProperties();
+      ++it) {
+    props << *it;
+  }
+  props.done();
+
+  obj.add("constants");
+  JSON::DocTarget::ListStream consts(out);
+  for (const Const* it = constants();
+      it != constants() + numConstants();
+      ++it) {
+    consts << *it;
+  }
+  consts.done();
+
+  obj.done();
 }
 
 //=============================================================================

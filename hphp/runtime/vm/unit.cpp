@@ -1774,6 +1774,15 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   }
   arrays.done();
 
+  obj.add("classes");
+  JSON::DocTarget::ListStream classes(out);
+  for(const auto& elem : m_preClasses) {
+    classes.next();
+
+    out << *elem.get();
+  }
+  classes.done();
+
   obj.done();
 }
 
