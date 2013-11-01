@@ -333,6 +333,9 @@ namespace {
 void Func::serialize(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream obj(out);
 
+  if(id() != -1)            obj.add("id", id());
+  if(preClass() != nullptr) obj.add("classId", preClass()->id());
+
   obj.add("name"                  , stringDataToStdString(m_name));
   obj.add("fullName"              , stringDataToStdString(m_fullName));
   obj.add("line1"                 , shared()->m_line1);
