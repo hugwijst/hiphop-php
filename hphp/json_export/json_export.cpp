@@ -84,8 +84,6 @@ int main(int argc, const char* argv[]) {
         Unit* u = repo.urp().load(*path_it, *cs_it);
         u->toJson(out);
 
-        std::cout << u->toString() << std::endl;
-
         ++path_it;
         ++cs_it;
     }

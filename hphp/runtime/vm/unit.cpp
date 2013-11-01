@@ -1783,6 +1783,8 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   }
   classes.done();
 
+  obj.add("toString_DEBUG", toString());
+
   obj.done();
 }
 
