@@ -320,11 +320,13 @@ const Func* Func::cloneAndSetClass(Class* cls) const {
   return clonedFunc;
 }
 
-std::string stringDataToStdString(const StringData* sd) {
-  if(sd != nullptr) {
-    return sd->toCPPString();
-  } else {
-    return "";
+namespace {
+  std::string stringDataToStdString(const StringData* sd) {
+    if(sd != nullptr) {
+      return sd->toCPPString();
+    } else {
+      return "";
+    }
   }
 }
 
