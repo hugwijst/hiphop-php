@@ -17,7 +17,7 @@ int main(int argc, const char* argv[]) {
     if(argc < 3) {
         std::cerr << "Missing parameters!" << std::endl;
         std::cerr << "Please specify the location of the repo as the first argument." << std::endl;
-	std::cerr << "Please specify the location of the resulting .json file as the second argument." << std::endl;
+        std::cerr << "Please specify the location of the resulting .json file as the second argument." << std::endl;
         return 1;
     }
 
@@ -32,7 +32,7 @@ int main(int argc, const char* argv[]) {
     HPHP::RuntimeOption::EnableZendCompat = false;
     HPHP::RuntimeOption::EvalJitEnableRenameFunction = false;
 
-  // Turn off commits, because we don't want systemlib to get included
+    // Turn off commits, because we don't want systemlib to get included
     HPHP::RuntimeOption::RepoCommit = false;
 
     HPHP::RuntimeOption::RepoCentralPath = repo_path;
