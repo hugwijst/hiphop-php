@@ -45,13 +45,13 @@ typedef std::vector<std::pair<int,Offset> > DVFuncletsVec;
 /*
  * Metadata about a php function or object method.
  */
-struct Func {
+struct Func : public JSON::DocTarget::ISerializable {
   friend class FuncEmitter;
 
   typedef hphp_hash_map<const StringData*, TypedValue, string_data_hash,
                         string_data_isame> UserAttributeMap;
 
-  struct ParamInfo { // Parameter default value info.
+  struct ParamInfo : public JSON::DocTarget::ISerializable { // Parameter default value info.
     // construct a dummy ParamInfo
     ParamInfo()
       : m_builtinType(KindOfInvalid), m_funcletOff(InvalidAbsoluteOffset),
@@ -79,7 +79,7 @@ struct Func {
       }
     }
 
-    void toJson(JSON::DocTarget::OutputStream& out) const {
+    void serialize(JSON::DocTarget::OutputStream& out) const {
       const StringData* tcName      = m_typeConstraint.typeName();
       TypeConstraint::Flags tcFlags = m_typeConstraint.flags();
 
@@ -179,7 +179,7 @@ struct Func {
   Func* clone(Class* cls) const;
   const Func* cloneAndSetClass(Class* cls) const;
 
-  void toJson(JSON::DocTarget::OutputStream& out) const;
+  void serialize(JSON::DocTarget::OutputStream& out) const;
 
   void validate() const {
 #ifdef DEBUG

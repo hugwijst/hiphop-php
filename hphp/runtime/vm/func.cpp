@@ -330,7 +330,7 @@ namespace {
   }
 }
 
-void Func::toJson(JSON::DocTarget::OutputStream& out) const {
+void Func::serialize(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream obj(out);
 
   obj.add("name"                  , stringDataToStdString(m_name));
@@ -357,9 +357,7 @@ void Func::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("params");
   JSON::DocTarget::ListStream paramsArr(out);
   for(const auto& param : shared()->m_params) {
-    paramsArr.next();
-
-    param.toJson(out);
+    paramsArr << param;
   }
   paramsArr.done();
 

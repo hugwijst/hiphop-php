@@ -1754,10 +1754,10 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   obj.add("functions");
   JSON::DocTarget::ListStream functions(out);
   for(const auto& entry : m_funcTable) {
-    functions.next();
-
-    // entry.pastOffset is also encoded in the function
-    entry.val()->toJson(out);
+    if(entry.val()->id() != -1) {
+      // entry.pastOffset is also encoded in the function
+      functions << *entry.val();
+    }
   }
   functions.done();
 
