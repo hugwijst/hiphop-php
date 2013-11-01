@@ -390,7 +390,7 @@ void Func::serialize(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream userAttributesObj(out);
   for(const auto& attr : shared()->m_userAttributes) {
     userAttributesObj.add(stringDataToStdString(attr.first));
-    attr.second.toJson(out);
+    attr.second.serialize(out);
   }
   userAttributesObj.done();
 

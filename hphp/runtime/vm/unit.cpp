@@ -1732,7 +1732,7 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
   lines.done();
 
   obj.add("mainReturn");
-  m_mainReturn.toJson(out);
+  m_mainReturn.serialize(out);
   obj.add("mergeable", m_mergeOnly);
 
   obj.add("typedefs");

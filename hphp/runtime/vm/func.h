@@ -88,7 +88,7 @@ struct Func : public JSON::DocTarget::ISerializable {
       obj.add("builtinType", tname(m_builtinType));
       obj.add("funcletOff"    , m_funcletOff);
       obj.add("defVal");
-      m_defVal.toJson(out);
+      m_defVal.serialize(out);
       obj.add("phpCode"       , m_phpCode ? m_phpCode->toCPPString() : "null");
       obj.add("Name"          , tcName ? tcName->toCPPString() : "null");
       obj.add("Flags"         , tcFlags);
@@ -99,7 +99,7 @@ struct Func : public JSON::DocTarget::ISerializable {
       JSON::DocTarget::MapStream userAttributesObj(out);
       for(const auto& attr : m_userAttributes) {
         userAttributesObj.add(attr.first->toCPPString());
-        attr.second.toJson(out);
+        attr.second.serialize(out);
       }
       userAttributesObj.done();
 

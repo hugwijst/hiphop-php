@@ -95,7 +95,7 @@ struct TypedValue {
   Value m_data;
 
   std::string pretty() const;
-  void toJson(JSON::DocTarget::OutputStream& out) const;
+  void serialize(JSON::DocTarget::OutputStream& out) const;
 };
 #else
 struct TypedValue {
@@ -104,7 +104,7 @@ struct TypedValue {
   AuxUnion m_aux;
 
   std::string pretty() const; // debug formatting. see trace.h
-  void toJson(JSON::DocTarget::OutputStream& out) const;
+  void serialize(JSON::DocTarget::OutputStream& out) const;
 };
 #endif
 

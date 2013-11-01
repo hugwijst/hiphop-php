@@ -18,6 +18,8 @@
 #include "hphp/util/trace.h"
 #include "hphp/util/json.h"
 
+#include "hphp/runtime/base/variable-serializer.h"
+
 namespace HPHP {
 
 //////////////////////////////////////////////////////////////////////
@@ -28,14 +30,26 @@ std::string TypedValue::pretty() const {
   return Trace::prettyNode(tname(m_type).c_str(), std::string(buf));
 }
 
-void TypedValue::toJson(JSON::DocTarget::OutputStream& out) const {
+void TypedValue::serialize(JSON::DocTarget::OutputStream& out) const {
   JSON::DocTarget::MapStream obj(out);
 
   obj.add("type", tname(m_type));
 
-  std::ostringstream ss;
-  ss << m_data.num;
-  obj.add("value", ss.str());
+  switch(m_type) {
+    case KindOfStaticString: // FALL THROUGH
+    case KindOfString:  obj.add("value", m_data.pstr->toCPPString()); break;
+    case KindOfBoolean: obj.add("value", m_data.num == 0); break;
+    case KindOfInt64:   obj.add("value", (int)m_data.num); break;
+    //case KindOfDouble:  obj.add("value", m_data.dbl); break;
+    case KindOfArray:
+      {
+        VariableSerializer vs(VariableSerializer::Type::JSON);
+        String str = vs.serializeValue(m_data.parr, false);
+        obj.add("value", JSON::JsonString(str->toCPPString()));
+        break;
+      }
+    default: /* don't know how to represent the type in JSON */ break;
+  }
 
   obj.done();
 }
