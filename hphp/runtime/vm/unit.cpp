@@ -1770,7 +1770,7 @@ void Unit::toJson(JSON::DocTarget::OutputStream& out) const {
     // The easiest way to get a CArrRef is elem->copy().
     // TODO: Find a more efficient solution.
     String str = vs.serializeValue(Variant(elem->copy()), false);
-    out << str->toCPPString();
+    out << JSON::JsonString(str->toCPPString());
   }
   arrays.done();
 
